@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import timeit
+import time
 import logging
 from pathlib import Path
 import subprocess
@@ -123,14 +125,16 @@ def get_files(args, logger):
     if args.debug or args.log:
         logger.info(f"Files found: {len(files_list)}")
     else:
-        print(f"Files found: {len(files_list)}")
+        print(f"Files found: {len(files_list)}\n")
 
     return files_list
 
 
 def convert_files(args, files, logger):
-
-    for input_file in files:
+    start_time = timeit.default_timer()
+    avg_time = []
+    printProgressBar(0, len(files), length=50)
+    for i, input_file in enumerate(files):
 
         if args.debug or args.log:
             logger.info(f"Converting {input_file}")
@@ -141,24 +145,79 @@ def convert_files(args, files, logger):
         output_file = filename.with_suffix(f".{args.output_format}")
         proc = subprocess.Popen(['ebook-convert', input_file, output_file],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        time.sleep(0.1)
+
+        if (i/len(files)*100) < 5:
+            expected_time = "?"
+        else:
+            curr_time = timeit.default_timer()
+            avg_time.append(curr_time-start_time)
+            start_time = timeit.default_timer()  # reset start time
+
+            expected_time = calc_expected_time(
+                (sum(avg_time)/len(avg_time))*(len(files)-i))
+
+        # Update Progress Bar
+        printProgressBar(i + 1, len(files), length=50,
+                         expected_time=expected_time)
+
         out, err = proc.communicate()
 
         if args.verbose:
             print(out.decode())
 
-        if args.delete:
-            if args.debug or args.log:
-                logger.info(f"Deleting {input_file}")
-            else:
-                print(f"Deleting {input_file}")
+        # if the process return code is 0
+        if proc.returncode == 0:
+            if args.delete:
+                if os.path.exists(output_file):
+                    if args.debug or args.log:
+                        logger.info(f"Deleting {input_file}")
+                    else:
+                        print(f"Deleting {input_file}")
 
-            # Delete the input file
-            os.remove(input_file)
+                    # Delete the input file
+                    os.remove(input_file)
+        else:
+            print(err.decode())
 
         if args.debug or args.log:
             logger.info(f"File converted to {output_file}")
         else:
             print(f"File converted to {output_file}\n")
+
+
+def printProgressBar(iteration, total, decimals=1,
+                     length=100, expected_time='?', fill='█'):
+    """
+    Call in a loop to create terminal progress bar
+    @params:
+        iteration       - Required  : current iteration (int)
+        total           - Required  : total iterations (int)
+        decimals        - Optional  : positive number of decimals in percent complete (int)
+        length          - Optional  : character length of bar (int)
+        expected_time   - Optional  : expected time of completion(str)
+        fill            - Optional  : bar fill character (str)
+    """
+    percent = ("{0:." + str(decimals) + "f}") \
+        .format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    status = f"{iteration}/{total}"
+
+    sys.stdout.write(
+        f'\r{percent}% |{bar}| {status}, ETA: {expected_time}\r')
+    sys.stdout.flush()
+    # Print new line on Complete
+
+
+def calc_expected_time(seconds):
+    seconds = seconds % (24 * 3600)
+    hour = seconds // 3600
+    seconds %= 3600
+    minutes = seconds // 60
+    seconds %= 60
+
+    return "%02d:%02d:%02d" % (hour, minutes, seconds)
 
 
 def init_logging(args):

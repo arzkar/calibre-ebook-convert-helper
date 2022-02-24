@@ -12,13 +12,9 @@ To report issues for the CLI, open an issue at https://github.com/arzkar/calibre
 
 ## Dependencies
 
----
-
 This script depends on [Calibre](https://github.com/kovidgoyal/calibre) so it needs to be installed in your system. Calibre can be download from [here](https://calibre-ebook.com/download).
 
 ## Download
-
----
 
 There are many ways to download the script:
 
@@ -46,8 +42,6 @@ curl -O https://raw.githubusercontent.com/arzkar/calibre-ebook-convert-helper/ma
   - Make sure that the filename is `calibre-ebook-convert-helper.py`, not `.txt`
 
 ## Run
-
----
 
 ```
 
@@ -90,8 +84,6 @@ optional arguments:
 ---
 
 ## Example
-
----
 
 - To convert all `mobi` files inside the directory `~/Books` into `azw3`
 
