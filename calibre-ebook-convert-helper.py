@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import timeit
-import time
 import logging
 from pathlib import Path
 import subprocess
@@ -47,6 +45,12 @@ def main(argv=None):
         exit(1)
 
     files = get_files(args, logger)
+
+    if args.debug or args.log:
+        logger.info(f"Files found: {len(files)}")
+    else:
+        tqdm.write(f"Files found: {len(files)}\n")
+
     convert_files(args, files, logger)
 
     if args.version is True:
@@ -75,10 +79,13 @@ To report issues for the CLI, open an issue at https://github.com/arzkar/calibre
                         required=True, help="Absoulte Path to the directory")
 
     parser.add_argument("--delete", action='store_true',
-                        help="Delete all the files with the Input format")
+                        help="Delete all the files with the input format")
 
     parser.add_argument("-r", "--recursive", action='store_true',
                         help="Convert all files from both the directory and its sub-directories")
+
+    parser.add_argument("--ignore", action='store_true',
+                        help="Read directories or files from .echignore which will be excluded from the conversion")
 
     parser.add_argument("--verbose", action='store_true',
                         help="Show ebook-convert's stdout")
@@ -102,10 +109,10 @@ def get_files(args, logger):
     if args.recursive:
         if args.debug or args.log:
             logger.info(
-                f"Searching for {args.input_format} files in the directory recursively")
+                f"Recursively searching for {args.input_format} files in {args.dir}")
         else:
             tqdm.write(
-                f"Searching for {args.input_format} files in the directory recursively")
+                f"Recursively searching for {args.input_format} files in {args.dir}")
 
         for path, _, files in os.walk(args.dir):
             for file in files:
@@ -117,10 +124,10 @@ def get_files(args, logger):
     else:
         if args.debug or args.log:
             logger.info(
-                f"Searching for {args.input_format} files in the directory non-recursively")
+                f"Non-recursively searching for {args.input_format} files in {args.dir}")
         else:
             tqdm.write(
-                f"Searching for {args.input_format} files in the directory non-recursively")
+                f"Non-ecursively searching for {args.input_format} files in {args.dir}")
 
         for item in os.listdir(args.dir):
             item_path = os.path.join(args.dir, item)
@@ -128,12 +135,33 @@ def get_files(args, logger):
                 if item_path.endswith(f".{args.input_format}"):
                     files_list.append(item_path)
 
-    if args.debug or args.log:
-        logger.info(f"Files found: {len(files_list)}")
-    else:
-        tqdm.write(f"Files found: {len(files_list)}\n")
+    if args.ignore:
+        ignore_file = os.path.join(args.dir, ".echignore")
+        if args.debug or args.log:
+            logger.info(
+                f"Processing: {ignore_file}")
+        else:
+            tqdm.write(
+                f"Processing: {ignore_file}")
 
-    return files_list
+        with open(ignore_file, "r") as f:
+            ignore_list = [line.strip() for line in f]
+
+        new_list = [
+            item for item in files_list if not item.startswith(tuple(ignore_list))]
+
+        if args.debug or args.log:
+            logger.info(
+                f"Ignoring {len(files_list)-len(new_list)} files")
+
+            for file in (list(set(files_list) - set(new_list))):
+                logger.info(f"Ignoring: {file}")
+        else:
+            tqdm.write(
+                f"Ignoring: {len(files_list)-len(new_list)} files")
+        return new_list
+    else:
+        return files_list
 
 
 def convert_files(args, files, logger):
@@ -143,11 +171,6 @@ def convert_files(args, files, logger):
 
     with tqdm(total=len(files), ascii=False,
               unit="file", bar_format=bar_format) as pbar:
-        if len(files) == 0:
-            if args.debug or args.log:
-                logger.info("No files to convert!")
-            else:
-                tqdm.write("No files to convert!")
 
         for input_file in files:
 

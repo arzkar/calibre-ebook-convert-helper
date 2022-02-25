@@ -16,6 +16,12 @@ To report issues for the CLI, open an issue at https://github.com/arzkar/calibre
 
 - Depends on [Python](https://www.python.org/) so it needs to be installed in your system. Python can be installed from [here](https://www.python.org/downloads/)
 
+  - Python package: [tqdm](https://github.com/tqdm/tqdm) for progressbar<br>Install using:
+
+    ```
+    pip install -U tqdm
+    ```
+
 ---
 
 **NOTE:**
@@ -84,6 +90,7 @@ optional arguments:
   --dir DIR             Absoulte Path to the directory
   --delete              Delete all the files with the Input format
   -r, --recursive       Convert all files from both the directory and its sub-directories
+  --ignore              Read directories or files from .echignore which will be excluded from the conversion
   --verbose             Show ebook-convert's stdout
   --debug               Show the log in console
   --log                 Generate a log file in the current directory
@@ -102,7 +109,7 @@ python3 calibre-ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books
 
 ```
 
-- To convert all `mobi` files inside the directory `~/Books` and all its sub-directories into `azw3`
+- To include all the sub-directories inside the `--dir` directory, use `--recursive`
 
 ```
 
@@ -110,10 +117,24 @@ python3 calibre-ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --recursiv
 
 ```
 
-- To convert all `mobi` files inside the directory `~/Books` into `azw3` and delete the `mobi` files.
+- To delete the all the files with `-i, --input-format` i.e. `mobi`, use `--delete`
 
 ```
 
 python3 calibre-ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --delete
 
 ```
+
+- To ignore directories or files, use `--ignore` which will read the `.echignore` file from the root directory specified by `--dir` and exclude its contents
+
+```
+
+python3 calibre-ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --ignore
+
+```
+
+---
+
+## Note
+
+`.echignore` file needs to be in the root directory specified by `--dir`. Each directory or file needs to be in its own line with its **absolute path**.
