@@ -20,6 +20,9 @@ import subprocess
 import os
 import sys
 import argparse
+from tqdm import tqdm
+
+bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
 
 
 def main(argv=None):
@@ -37,7 +40,7 @@ def main(argv=None):
         sys.exit(1)
 
     if not os.path.isdir(args.dir):
-        print(
+        tqdm.write(
             f"Directory: {args.dir} doesnt exist!\nPlease enter a valid directory path")
         if args.debug:
             logger.error(f"DirectoryNotFound: {args.dir}")
@@ -47,7 +50,7 @@ def main(argv=None):
     convert_files(args, files, logger)
 
     if args.version is True:
-        print("calibre-ebook-convert-helper: v0.1")
+        tqdm.write("calibre-ebook-convert-helper: v0.1")
         sys.exit(0)
 
 
@@ -101,7 +104,7 @@ def get_files(args, logger):
             logger.info(
                 f"Searching for {args.input_format} files in the directory recursively")
         else:
-            print(
+            tqdm.write(
                 f"Searching for {args.input_format} files in the directory recursively")
 
         for path, _, files in os.walk(args.dir):
@@ -116,7 +119,7 @@ def get_files(args, logger):
             logger.info(
                 f"Searching for {args.input_format} files in the directory non-recursively")
         else:
-            print(
+            tqdm.write(
                 f"Searching for {args.input_format} files in the directory non-recursively")
 
         for item in os.listdir(args.dir):
@@ -128,7 +131,7 @@ def get_files(args, logger):
     if args.debug or args.log:
         logger.info(f"Files found: {len(files_list)}")
     else:
-        print(f"Files found: {len(files_list)}\n")
+        tqdm.write(f"Files found: {len(files_list)}\n")
 
     return files_list
 
@@ -137,107 +140,55 @@ def convert_files(args, files, logger):
     """
     Loop through the files and convert each of them sequentially
     """
-    start_time = timeit.default_timer()
-    avg_time = []
 
-    term_width = os.get_terminal_size().columns
-    if not len(files) == 0:
-        # printProgressBar(0, len(files), length=term_width)  # 0% bar
-        pass
-    else:
-        if args.debug or args.log:
-            logger.info("No files to convert!")
-        else:
-            print("No files to convert!")
+    with tqdm(total=len(files), ascii=False,
+              unit="file", bar_format=bar_format) as pbar:
+        if len(files) == 0:
+            if args.debug or args.log:
+                logger.info("No files to convert!")
+            else:
+                tqdm.write("No files to convert!")
 
-    for i, input_file in enumerate(files):
+        for input_file in files:
 
-        if args.debug or args.log:
-            logger.info(f"Converting {input_file}")
-        else:
-            print(f"Converting {input_file}")
+            if args.debug or args.log:
+                logger.info(f"Converting {input_file}")
+            else:
+                tqdm.write(f"Converting {input_file}")
 
-        filename = Path(input_file)
-        output_file = filename.with_suffix(f".{args.output_format}")
-        proc = subprocess.Popen(['ebook-convert', input_file, output_file],
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        time.sleep(0.1)
+            filename = Path(input_file)
+            output_file = filename.with_suffix(f".{args.output_format}")
 
-        if (i/len(files)*100) < 1:
-            expected_time = 0
-        else:
-            curr_time = timeit.default_timer()
-            avg_time.append(curr_time-start_time)
-            start_time = timeit.default_timer()  # reset start time
+            proc = subprocess.Popen(['ebook-convert', input_file, output_file],
+                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-            expected_time = (sum(avg_time)/len(avg_time))*(len(files)-i)
+            out, err = proc.communicate()
 
-        # Update progress bar
-        term_width = os.get_terminal_size().columns
-        printProgressBar(i + 1, len(files), length=term_width,
-                         expected_time=format_time(expected_time))
+            if args.verbose:
+                tqdm.write(out.decode())
 
-        out, err = proc.communicate()
-
-        if args.verbose:
-            print(out.decode())
-
-        # if the process return code is 0
-        if proc.returncode == 0:
-            if args.delete:
+            # if the process return code is 0
+            if proc.returncode == 0:
                 # if the newly converted file exists
                 if os.path.exists(output_file):
-                    if args.debug or args.log:
-                        logger.info(f"Deleting {input_file}")
-                    else:
-                        print(f"Deleting {input_file}")
+                    if args.delete:
+                        if args.debug or args.log:
+                            logger.info(f"Deleting {input_file}")
+                        else:
+                            tqdm.write(f"Deleting {input_file}")
 
-                    # Delete the input file
-                    os.remove(input_file)
-        else:
-            print(err.decode())
+                        # Delete the input file
+                        os.remove(input_file)
+            else:
+                tqdm.write(err.decode())
 
-        if args.debug or args.log:
-            logger.info(f"File converted to {output_file}")
-        else:
-            print(f"File converted to {output_file}\n")
+            if args.debug or args.log:
+                logger.info(f"File converted to {output_file}")
+            else:
+                tqdm.write(f"File converted to {output_file}\n")
 
-
-def printProgressBar(iteration, total, decimals=1,
-                     length=100, expected_time='?', fill='█'):
-    """
-    Call in a loop to create terminal progress bar
-    @params:
-        iteration       - Required  : current iteration (int)
-        total           - Required  : total iterations (int)
-        decimals        - Optional  : positive number of decimals in percent complete (int)
-        length          - Optional  : character length of bar (int)
-        expected_time   - Optional  : expected time of completion(str)
-        fill            - Optional  : bar fill character (str)
-    """
-    percent = ("{0:." + str(decimals) + "f}") \
-        .format(100 * (iteration / float(total)))
-    status = f"{iteration}/{total}"
-    suffix = f"{status}, ETA: {expected_time}"
-    # -4 for the extra chars, | and space, in the print()
-    trimmed_length = int(length-len(percent)-len(suffix)-6)
-    filledLength = (trimmed_length * iteration // total)
-    bar = fill * filledLength + '-' * (trimmed_length - filledLength)
-
-    print(f"{percent}% |{bar}| {suffix}", end="\r")
-
-
-def format_time(seconds):
-    """
-    Format the time from seconds to HH:MM:SS
-    """
-    seconds = seconds % (24 * 3600)
-    hour = seconds // 3600
-    seconds %= 3600
-    minutes = seconds // 60
-    seconds %= 60
-
-    return "%02d:%02d:%02d" % (hour, minutes, seconds)
+            # update the progressbar
+            pbar.update(1)
 
 
 def init_logging(args):
