@@ -12,7 +12,16 @@ To report issues for the CLI, open an issue at https://github.com/arzkar/calibre
 
 ## Dependencies
 
-This script depends on [Calibre](https://github.com/kovidgoyal/calibre) so it needs to be installed in your system. Calibre can be download from [here](https://calibre-ebook.com/download).
+- Depends on [Calibre](https://github.com/kovidgoyal/calibre) so it needs to be installed in your system. Calibre can be download from [here](https://calibre-ebook.com/download).
+
+- Depends on [Python](https://www.python.org/) so it needs to be installed in your system. Python can be installed from [here](https://www.python.org/downloads/)
+
+---
+
+**NOTE:**
+The script was developed using Python 3.8.5 so if you are using an older version than that, you might run into some issue. Python 3.7+ _should_ work fine.
+
+---
 
 ## Download
 
