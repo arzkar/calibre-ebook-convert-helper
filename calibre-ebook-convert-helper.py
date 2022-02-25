@@ -92,6 +92,9 @@ To report issues for the CLI, open an issue at https://github.com/arzkar/calibre
 
 
 def get_files(args, logger):
+    """
+    Travserse through the directory and get a list of files to convert
+    """
     files_list = []
     if args.recursive:
         if args.debug or args.log:
@@ -131,9 +134,22 @@ def get_files(args, logger):
 
 
 def convert_files(args, files, logger):
+    """
+    Loop through the files and convert each of them sequentially
+    """
     start_time = timeit.default_timer()
     avg_time = []
-    printProgressBar(0, len(files), length=50)
+
+    term_width = os.get_terminal_size().columns
+    if not len(files) == 0:
+        # printProgressBar(0, len(files), length=term_width)  # 0% bar
+        pass
+    else:
+        if args.debug or args.log:
+            logger.info("No files to convert!")
+        else:
+            print("No files to convert!")
+
     for i, input_file in enumerate(files):
 
         if args.debug or args.log:
@@ -147,19 +163,19 @@ def convert_files(args, files, logger):
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         time.sleep(0.1)
 
-        if (i/len(files)*100) < 5:
-            expected_time = "?"
+        if (i/len(files)*100) < 1:
+            expected_time = 0
         else:
             curr_time = timeit.default_timer()
             avg_time.append(curr_time-start_time)
             start_time = timeit.default_timer()  # reset start time
 
-            expected_time = calc_expected_time(
-                (sum(avg_time)/len(avg_time))*(len(files)-i))
+            expected_time = (sum(avg_time)/len(avg_time))*(len(files)-i)
 
-        # Update Progress Bar
-        printProgressBar(i + 1, len(files), length=50,
-                         expected_time=expected_time)
+        # Update progress bar
+        term_width = os.get_terminal_size().columns
+        printProgressBar(i + 1, len(files), length=term_width,
+                         expected_time=format_time(expected_time))
 
         out, err = proc.communicate()
 
@@ -169,6 +185,7 @@ def convert_files(args, files, logger):
         # if the process return code is 0
         if proc.returncode == 0:
             if args.delete:
+                # if the newly converted file exists
                 if os.path.exists(output_file):
                     if args.debug or args.log:
                         logger.info(f"Deleting {input_file}")
@@ -200,17 +217,20 @@ def printProgressBar(iteration, total, decimals=1,
     """
     percent = ("{0:." + str(decimals) + "f}") \
         .format(100 * (iteration / float(total)))
-    filledLength = int(length * iteration // total)
-    bar = fill * filledLength + '-' * (length - filledLength)
     status = f"{iteration}/{total}"
+    suffix = f"{status}, ETA: {expected_time}"
+    # -4 for the extra chars, | and space, in the print()
+    trimmed_length = int(length-len(percent)-len(suffix)-6)
+    filledLength = (trimmed_length * iteration // total)
+    bar = fill * filledLength + '-' * (trimmed_length - filledLength)
 
-    sys.stdout.write(
-        f'\r{percent}% |{bar}| {status}, ETA: {expected_time}\r')
-    sys.stdout.flush()
-    # Print new line on Complete
+    print(f"{percent}% |{bar}| {suffix}", end="\r")
 
 
-def calc_expected_time(seconds):
+def format_time(seconds):
+    """
+    Format the time from seconds to HH:MM:SS
+    """
     seconds = seconds % (24 * 3600)
     hour = seconds // 3600
     seconds %= 3600
@@ -221,6 +241,9 @@ def calc_expected_time(seconds):
 
 
 def init_logging(args):
+    """
+    Initilize logging, with StreamHandler and FileHandler if specified
+    """
     logger = logging.getLogger('calibre-ebook-convert-helper')
     logger.setLevel(logging.INFO)
 
