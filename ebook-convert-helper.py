@@ -18,7 +18,12 @@ import subprocess
 import os
 import sys
 import argparse
-from tqdm import tqdm
+
+try:
+    from tqdm import tqdm
+except ImportError:
+    print("Error: tqdm is not installed which is needed to display the progressbar.\nInstall using: pip install -U tqdm")
+    exit(1)
 
 bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
 
@@ -54,12 +59,12 @@ def main(argv=None):
     convert_files(args, files, logger)
 
     if args.version is True:
-        tqdm.write("calibre-ebook-convert-helper: v0.1")
+        tqdm.write("ebook-convert-helper: v0.1")
         sys.exit(0)
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(prog='calibre-ebook-convert-helper',
+    parser = argparse.ArgumentParser(prog='ebook-convert-helper',
                                      description="""
 A helper script for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.
 
@@ -218,7 +223,7 @@ def init_logging(args):
     """
     Initilize logging, with StreamHandler and FileHandler if specified
     """
-    logger = logging.getLogger('calibre-ebook-convert-helper')
+    logger = logging.getLogger('ebook-convert-helper')
     logger.setLevel(logging.INFO)
 
     formatter = logging.Formatter(
@@ -230,7 +235,7 @@ def init_logging(args):
         logger.addHandler(console_handler)
 
     if args.log:
-        log_file = os.path.join(args.dir, 'calibre-ebook-convert-helper.log')
+        log_file = os.path.join(args.dir, 'ebook-convert-helper.log')
         file_handler = logging.FileHandler(
             filename=log_file, mode='a')
         file_handler.setFormatter(formatter)

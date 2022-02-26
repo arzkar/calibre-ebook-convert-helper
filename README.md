@@ -42,25 +42,25 @@ git clone https://github.com/arzkar/calibre-ebook-convert-helper
 - Using [Wget](https://www.gnu.org/software/wget/):
 
 ```
-wget https://raw.githubusercontent.com/arzkar/calibre-ebook-convert-helper/main/calibre-ebook-convert-helper.py
+wget https://raw.githubusercontent.com/arzkar/calibre-ebook-convert-helper/main/ebook-convert-helper.py
 ```
 
 - Using [curl](https://curl.se/):
 
 ```
-curl -O https://raw.githubusercontent.com/arzkar/calibre-ebook-convert-helper/main/calibre-ebook-convert-helper.py
+curl -O https://raw.githubusercontent.com/arzkar/calibre-ebook-convert-helper/main/ebook-convert-helper.py
 ```
 
 - From within the browser:
-  - Go to this [page](https://raw.githubusercontent.com/arzkar/calibre-ebook-convert-helper/main/calibre-ebook-convert-helper.py)
+  - Go to this [page](https://raw.githubusercontent.com/arzkar/calibre-ebook-convert-helper/main/ebook-convert-helper.py)
   - Right Click and save the file using "Save Page as"
-  - Make sure that the filename is `calibre-ebook-convert-helper.py`, not `.txt`
+  - Make sure that the filename is `ebook-convert-helper.py`, not `.txt`
 
 ## Run
 
 ```
 
-python3 calibre-ebook-convert-helper.py
+python3  ebook-convert-helper.py
 
 ```
 
@@ -68,8 +68,8 @@ python3 calibre-ebook-convert-helper.py
 
 ```
 
-> python3 calibre-ebook-convert-helper.py --help
-usage: calibre-ebook-convert-helper [-h] -i INPUT_FORMAT -o OUTPUT_FORMAT --dir
+> python3  ebook-convert-helper.py --help
+usage: ebook-convert-helper [-h] -i INPUT_FORMAT -o OUTPUT_FORMAT --dir
                                     DIR [--delete-file] [-r] [--verbose] [--debug]
                                     [--log] [--version]
 
@@ -105,7 +105,7 @@ optional arguments:
 
 ```
 
-python3 calibre-ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books
+python3  ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books
 
 ```
 
@@ -113,7 +113,7 @@ python3 calibre-ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books
 
 ```
 
-python3 calibre-ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --recursive
+python3  ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --recursive
 
 ```
 
@@ -121,7 +121,7 @@ python3 calibre-ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --recursiv
 
 ```
 
-python3 calibre-ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --delete
+python3  ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --delete
 
 ```
 
@@ -129,7 +129,7 @@ python3 calibre-ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --delete
 
 ```
 
-python3 calibre-ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --ignore
+python3  ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --ignore
 
 ```
 
