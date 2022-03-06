@@ -26,8 +26,16 @@ except ImportError:
     print("Error: tqdm is not installed which is needed to display the progressbar.\nInstall using: pip install -U tqdm")
     exit(1)
 
+try:
+    from colorama import init, Fore, Style
+except ImportError:
+    print("Error: colorama is not installed which is needed to display colored terminal text.\nInstall using: pip install -U colorama")
+    exit(1)
+
 bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
 timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
+
+init(autoreset=True)  # colorama init
 
 
 def main(argv=None):
@@ -56,12 +64,13 @@ def main(argv=None):
     if args.debug or args.log:
         logger.info(f"Files found: {len(files)}")
     else:
-        tqdm.write(f"Files found: {len(files)}\n")
+        tqdm.write(
+            f"{Fore.CYAN}Files found: {len(files)}{Style.RESET_ALL}\n")
 
     convert_files(args, files, logger)
 
     if args.version is True:
-        tqdm.write("ebook-convert-helper: v0.1.1")
+        tqdm.write("ebook-convert-helper: v0.2")
         sys.exit(0)
 
 
@@ -119,7 +128,7 @@ def get_files(args, logger):
                 f"Recursively searching for {args.input_format} files in {args.dir}")
         else:
             tqdm.write(
-                f"Recursively searching for {args.input_format} files in {args.dir}")
+                f"{Fore.YELLOW}Recursively searching for {args.input_format} files in {args.dir}{Style.RESET_ALL}")
 
         for path, _, files in os.walk(args.dir):
             for file in files:
@@ -134,7 +143,7 @@ def get_files(args, logger):
                 f"Non-recursively searching for {args.input_format} files in {args.dir}")
         else:
             tqdm.write(
-                f"Non-ecursively searching for {args.input_format} files in {args.dir}")
+                f"{Fore.YELLOW}Non-ecursively searching for {args.input_format} files in {args.dir}{Style.RESET_ALL}")
 
         for item in os.listdir(args.dir):
             item_path = os.path.join(args.dir, item)
@@ -149,7 +158,7 @@ def get_files(args, logger):
                 f"Processing: {ignore_file}")
         else:
             tqdm.write(
-                f"Processing: {ignore_file}")
+                f"{Fore.BLUE}Processing: {ignore_file}{Style.RESET_ALL}")
 
         with open(ignore_file, "r") as f:
             ignore_list = [line.strip() for line in f]
@@ -165,7 +174,7 @@ def get_files(args, logger):
                 logger.info(f"Ignoring: {file}")
         else:
             tqdm.write(
-                f"Ignoring: {len(files_list)-len(new_list)} files")
+                f"{Fore.CYAN}Ignoring: {len(files_list)-len(new_list)} files{Style.RESET_ALL}")
         return new_list
     else:
         return files_list
@@ -184,7 +193,8 @@ def convert_files(args, files, logger):
             if args.debug or args.log:
                 logger.info(f"Converting {input_file}")
             else:
-                tqdm.write(f"Converting {input_file}")
+                tqdm.write(
+                    f"{Fore.GREEN}Converting {input_file}{Style.RESET_ALL}")
 
             filename = Path(input_file)
             output_file = filename.with_suffix(f".{args.output_format}")
@@ -205,7 +215,8 @@ def convert_files(args, files, logger):
                         if args.debug or args.log:
                             logger.info(f"Deleting {input_file}")
                         else:
-                            tqdm.write(f"Deleting {input_file}")
+                            tqdm.write(
+                                f"{Fore.RED}Deleting {input_file}{Style.RESET_ALL}")
 
                         # Delete the input file
                         os.remove(input_file)
@@ -213,9 +224,10 @@ def convert_files(args, files, logger):
                 tqdm.write(err.decode())
 
             if args.debug or args.log:
-                logger.info(f"File converted to {output_file}")
+                logger.info(f"File converted as {output_file}")
             else:
-                tqdm.write(f"File converted to {output_file}\n")
+                tqdm.write(
+                    f"{Fore.MAGENTA}File converted as {output_file}{Style.RESET_ALL}\n")
 
             # update the progressbar
             pbar.update(1)
