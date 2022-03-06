@@ -16,10 +16,13 @@ To report issues for the CLI, open an issue at https://github.com/arzkar/calibre
 
 - Depends on [Python](https://www.python.org/) so it needs to be installed in your system. Python can be installed from [here](https://www.python.org/downloads/)
 
-  - Python package: [tqdm](https://github.com/tqdm/tqdm) for progressbar<br>Install using:
+  - Python packages: [tqdm](https://github.com/tqdm/tqdm) for progressbar and [colorama](https://github.com/tartley/colorama) for colored terminal text.
+    Install using:
 
     ```
-    pip install -U tqdm
+    pip install -r requirements.txt # if you cloned the project
+    or
+    pip installl -U tqdm colorama
     ```
 
 ---
