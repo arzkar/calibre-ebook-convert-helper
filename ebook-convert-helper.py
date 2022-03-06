@@ -14,6 +14,7 @@
 
 import logging
 from pathlib import Path
+from datetime import datetime
 import subprocess
 import os
 import sys
@@ -32,6 +33,7 @@ except ImportError:
     exit(1)
 
 bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
+timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
 
 init(autoreset=True)  # colorama init
 
@@ -248,7 +250,7 @@ def init_logging(args):
 
     if args.log:
         log_file = os.path.join(
-            args.dir, 'ebook-convert-helper.log')
+            args.dir, f'ebook-convert-helper - {timestamp}.log')
         file_handler = logging.FileHandler(
             filename=log_file, mode='a')
         file_handler.setFormatter(formatter)
