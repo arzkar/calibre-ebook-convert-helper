@@ -14,6 +14,7 @@
 
 import logging
 from pathlib import Path
+from datetime import datetime
 import subprocess
 import os
 import sys
@@ -26,6 +27,7 @@ except ImportError:
     exit(1)
 
 bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
+timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
 
 
 def main(argv=None):
@@ -59,7 +61,7 @@ def main(argv=None):
     convert_files(args, files, logger)
 
     if args.version is True:
-        tqdm.write("ebook-convert-helper: v0.1")
+        tqdm.write("ebook-convert-helper: v0.1.1")
         sys.exit(0)
 
 
@@ -235,7 +237,8 @@ def init_logging(args):
         logger.addHandler(console_handler)
 
     if args.log:
-        log_file = os.path.join(args.dir, 'ebook-convert-helper.log')
+        log_file = os.path.join(
+            args.dir, f'ebook-convert-helper - {timestamp}.log')
         file_handler = logging.FileHandler(
             filename=log_file, mode='a')
         file_handler.setFormatter(formatter)
