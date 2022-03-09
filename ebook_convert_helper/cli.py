@@ -20,17 +20,8 @@ import os
 import sys
 import argparse
 
-try:
-    from tqdm import tqdm
-except ImportError:
-    print("Error: tqdm is not installed which is needed to display the progressbar.\nInstall using: pip install -U tqdm")
-    exit(1)
-
-try:
-    from colorama import init, Fore, Style
-except ImportError:
-    print("Error: colorama is not installed which is needed to display colored terminal text.\nInstall using: pip install -U colorama")
-    exit(1)
+from tqdm import tqdm
+from colorama import init, Fore, Style
 
 bar_format = "{l_bar}{bar}| {n_fmt}/{total_fmt}, {rate_fmt}{postfix}, ETA: {remaining}"
 timestamp = datetime.now().strftime("%Y-%m-%d T%H%M%S")
@@ -52,32 +43,33 @@ def main(argv=None):
         parser.print_help(sys.stderr)
         sys.exit(1)
 
-    if not os.path.isdir(args.dir):
-        tqdm.write(
-            f"Directory: {args.dir} doesnt exist!\nPlease enter a valid directory path")
-        if args.debug:
-            logger.error(f"DirectoryNotFound: {args.dir}")
-        exit(1)
+    if args.input_format and args.output_format and args.dir:
+        if not os.path.isdir(args.dir):
+            tqdm.write(
+                f"Directory: {args.dir} doesnt exist!\nPlease enter a valid directory path")
+            if args.debug:
+                logger.error(f"DirectoryNotFound: {args.dir}")
+            exit(1)
 
-    files = get_files(args, logger)
+        files = get_files(args, logger)
 
-    if args.debug or args.log:
-        logger.info(f"Files found: {len(files)}")
-    else:
-        tqdm.write(
-            f"{Fore.CYAN}Files found: {len(files)}{Style.RESET_ALL}\n")
+        if args.debug or args.log:
+            logger.info(f"Files found: {len(files)}")
+        else:
+            tqdm.write(
+                f"{Fore.CYAN}Files found: {len(files)}{Style.RESET_ALL}\n")
 
-    convert_files(args, files, logger)
+        convert_files(args, files, logger)
 
     if args.version is True:
-        tqdm.write("ebook-convert-helper: v0.3")
+        tqdm.write("ebook-convert-helper: v0.3.1")
         sys.exit(0)
 
 
 def create_parser():
     parser = argparse.ArgumentParser(prog='ebook-convert-helper',
                                      description="""
-A helper script for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.
+A helper cli for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.
 
 Calibre needs to be installed to use this script.
 
@@ -85,14 +77,14 @@ Supported sites which are compatible with Calibre can be found here: https://man
 
 To report issues for the CLI, open an issue at https://github.com/arzkar/calibre-ebook-convert-helper/issues
 """, formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument("-i", "--input-format", type=str,
-                        required=True, help="Input format")
+    parser.add_argument("-i", "--input-format",
+                        type=str, help="Input format")
 
-    parser.add_argument("-o", "--output-format", type=str,
-                        required=True, help="Output format")
+    parser.add_argument("-o", "--output-format",
+                        type=str, help="Output format")
 
     parser.add_argument("--dir",  type=str,
-                        required=True, help="Absoulte Path to the directory")
+                        help="Absoulte Path to the directory")
 
     parser.add_argument("--delete", action='store_true',
                         help="Delete all the files with the input format")

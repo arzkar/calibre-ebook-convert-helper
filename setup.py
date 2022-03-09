@@ -7,10 +7,10 @@ setup(
     name='ebook-convert-helper',
     author='Arbaaz Laskar',
     author_email="arzkar.dev@gmail.com",
-    description="A helper script for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.",
+    description="A helper cli for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    version="0.3",
+    version="0.3.1",
     license='Apache License',
     url="https://github.com/arzkar/calibre-ebook-convert-helper",
     packages=find_packages(

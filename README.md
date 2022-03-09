@@ -1,6 +1,6 @@
 <h1 align="center">calibre-ebook-convert-helper</h1>
 
-A helper script for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.<br>
+A helper cli for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.<br>
 
 Calibre needs to be installed to use this script.<br>
 
@@ -30,7 +30,7 @@ usage: ebook-convert-helper [-h] -i INPUT_FORMAT -o OUTPUT_FORMAT --dir
                                     DIR [--delete-file] [-r] [--verbose] [--debug]
                                     [--log] [--version]
 
-A helper script for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.
+A helper cli for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.
 
 Calibre needs to be installed to use this script.
 
