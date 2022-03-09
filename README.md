@@ -10,65 +10,22 @@ To report issues for the CLI, open an issue at https://github.com/arzkar/calibre
 
 # Installation
 
-## Dependencies
-
-- Depends on [Calibre](https://github.com/kovidgoyal/calibre) so it needs to be installed in your system. Calibre can be download from [here](https://calibre-ebook.com/download).
-
-- Depends on [Python](https://www.python.org/) so it needs to be installed in your system. Python can be installed from [here](https://www.python.org/downloads/)
-
-  - Python packages: [tqdm](https://github.com/tqdm/tqdm) for progressbar and [colorama](https://github.com/tartley/colorama) for colored terminal text.
-    Install using:
-
-    ```
-    pip install -r requirements.txt # if you cloned the project
-    or
-    pip install -U tqdm colorama
-    ```
-
----
-
-**NOTE:**
-The script was developed using Python 3.8.5 so if you are using an older version than that, you might run into some issue. Python 3.7+ _should_ work fine.
-
----
-
-## Download
-
-There are many ways to download the script:
-
-- Using [git](https://git-scm.com/downloads):
+## From pip (Recommended)
 
 ```
-git clone https://github.com/arzkar/calibre-ebook-convert-helper
+pip install -U ebook-convert-helper
 ```
 
-- Using [Wget](https://www.gnu.org/software/wget/):
+## From Github Source (Pre-release, for testing new features by Beta testers)
 
 ```
-wget https://raw.githubusercontent.com/arzkar/calibre-ebook-convert-helper/main/ebook-convert-helper.py
-```
-
-- Using [curl](https://curl.se/):
-
-```
-curl -O https://raw.githubusercontent.com/arzkar/calibre-ebook-convert-helper/main/ebook-convert-helper.py
-```
-
-- From within the browser:
-  - Go to this [page](https://raw.githubusercontent.com/arzkar/calibre-ebook-convert-helper/main/ebook-convert-helper.py)
-  - Right Click and save the file using "Save Page as"
-  - Make sure that the filename is `ebook-convert-helper.py`, not `.txt`
-
-## Run
-
-```
-python3 ebook-convert-helper.py
+pip install git+https://github.com/arzkar/calibre-ebook-convert-helper@main
 ```
 
 # Usage
 
 ```
-> python3 ebook-convert-helper.py --help
+> ebook-convert-helper --help
 usage: ebook-convert-helper [-h] -i INPUT_FORMAT -o OUTPUT_FORMAT --dir
                                     DIR [--delete-file] [-r] [--verbose] [--debug]
                                     [--log] [--version]
@@ -104,25 +61,25 @@ optional arguments:
 - To convert all `mobi` files inside the directory `~/Books` into `azw3`
 
 ```
-python3 ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books
+ebook-convert-helper-i mobi -o azw3 --dir ~/Books
 ```
 
 - To include all the sub-directories inside the `--dir` directory, use `--recursive`
 
 ```
-python3 ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --recursive
+ebook-convert-helper-i mobi -o azw3 --dir ~/Books --recursive
 ```
 
 - To delete the all the files with `-i, --input-format` i.e. `mobi`, use `--delete`
 
 ```
-python3 ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --delete
+ebook-convert-helper-i mobi -o azw3 --dir ~/Books --delete
 ```
 
 - To ignore directories or files, use `--ignore` which will read the `.echignore` file from the root directory specified by `--dir` and exclude its contents
 
 ```
-python3 ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --ignore
+ebook-convert-helper-i mobi -o azw3 --dir ~/Books --ignore
 ```
 
 ---

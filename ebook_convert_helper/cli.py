@@ -265,7 +265,3 @@ def init_logging(args):
 
     logger.info("Initialized logging")
     return logger
-
-
-if __name__ == "__main__":
-    main()
