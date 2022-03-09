@@ -70,7 +70,7 @@ def main(argv=None):
     convert_files(args, files, logger)
 
     if args.version is True:
-        tqdm.write("ebook-convert-helper: v0.2")
+        tqdm.write("ebook-convert-helper: v0.3")
         sys.exit(0)
 
 
@@ -160,22 +160,29 @@ def get_files(args, logger):
             tqdm.write(
                 f"{Fore.BLUE}Processing: {ignore_file}{Style.RESET_ALL}")
 
-        with open(ignore_file, "r") as f:
-            ignore_list = [line.strip() for line in f]
+        try:
+            with open(ignore_file, "r") as f:
+                # if the ignored path starts with the directory path .i.e. absolute path
+                # else merge the directory path with ignored path i.e. relative path
+                ignore_list = list(set([line.strip() if line.strip().startswith(args.dir) else os.path.join(
+                    args.dir, line.strip()) for line in f]))
+            new_list = [
+                item for item in files_list if not item.startswith(tuple(ignore_list))]
 
-        new_list = [
-            item for item in files_list if not item.startswith(tuple(ignore_list))]
+            if args.debug or args.log:
+                logger.info(
+                    f"Ignoring {len(files_list)-len(new_list)} {args.input_format} files")
 
-        if args.debug or args.log:
-            logger.info(
-                f"Ignoring {len(files_list)-len(new_list)} files")
+                for file in (list(set(files_list) - set(new_list))):
+                    logger.info(f"Ignoring: {file}")
+            else:
+                tqdm.write(
+                    f"{Fore.CYAN}Ignoring: {len(files_list)-len(new_list)} {args.input_format} files{Style.RESET_ALL}")
+            return new_list
+        # .echignore not found
+        except FileNotFoundError:
+            return files_list
 
-            for file in (list(set(files_list) - set(new_list))):
-                logger.info(f"Ignoring: {file}")
-        else:
-            tqdm.write(
-                f"{Fore.CYAN}Ignoring: {len(files_list)-len(new_list)} files{Style.RESET_ALL}")
-        return new_list
     else:
         return files_list
 

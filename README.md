@@ -22,7 +22,7 @@ To report issues for the CLI, open an issue at https://github.com/arzkar/calibre
     ```
     pip install -r requirements.txt # if you cloned the project
     or
-    pip installl -U tqdm colorama
+    pip install -U tqdm colorama
     ```
 
 ---
@@ -62,16 +62,13 @@ curl -O https://raw.githubusercontent.com/arzkar/calibre-ebook-convert-helper/ma
 ## Run
 
 ```
-
-python3  ebook-convert-helper.py
-
+python3 ebook-convert-helper.py
 ```
 
 # Usage
 
 ```
-
-> python3  ebook-convert-helper.py --help
+> python3 ebook-convert-helper.py --help
 usage: ebook-convert-helper [-h] -i INPUT_FORMAT -o OUTPUT_FORMAT --dir
                                     DIR [--delete-file] [-r] [--verbose] [--debug]
                                     [--log] [--version]
@@ -107,37 +104,29 @@ optional arguments:
 - To convert all `mobi` files inside the directory `~/Books` into `azw3`
 
 ```
-
-python3  ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books
-
+python3 ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books
 ```
 
 - To include all the sub-directories inside the `--dir` directory, use `--recursive`
 
 ```
-
-python3  ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --recursive
-
+python3 ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --recursive
 ```
 
 - To delete the all the files with `-i, --input-format` i.e. `mobi`, use `--delete`
 
 ```
-
-python3  ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --delete
-
+python3 ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --delete
 ```
 
 - To ignore directories or files, use `--ignore` which will read the `.echignore` file from the root directory specified by `--dir` and exclude its contents
 
 ```
-
-python3  ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --ignore
-
+python3 ebook-convert-helper.py -i mobi -o azw3 --dir ~/Books --ignore
 ```
 
 ---
 
 ## Note
 
-`.echignore` file needs to be in the root directory specified by `--dir`. Each directory or file needs to be in its own line with its **absolute path**.
+`.echignore` file needs to be in the root directory which is specified by `--dir`. Each directory or file needs to be in its own line and the path can either be relative or absolute.
