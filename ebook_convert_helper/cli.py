@@ -69,9 +69,9 @@ def main(argv=None):
 def create_parser():
     parser = argparse.ArgumentParser(prog='ebook-convert-helper',
                                      description="""
-A helper cli for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.
+A helper CLI for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.
 
-Calibre needs to be installed to use this script.
+Calibre needs to be installed to use this CLI.
 
 Supported sites which are compatible with Calibre can be found here: https://manual.calibre-ebook.com/generated/en/ebook-convert.html
 
@@ -87,7 +87,7 @@ To report issues for the CLI, open an issue at https://github.com/arzkar/calibre
                         help="Absoulte Path to the directory")
 
     parser.add_argument("--delete", action='store_true',
-                        help="Delete all the files with the input format")
+                        help="Delete all the files containing the Input format")
 
     parser.add_argument("-r", "--recursive", action='store_true',
                         help="Convert all files from both the directory and its sub-directories")

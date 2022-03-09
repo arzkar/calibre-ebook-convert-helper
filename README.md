@@ -1,8 +1,8 @@
 <h1 align="center">calibre-ebook-convert-helper</h1>
 
-A helper cli for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.<br>
+A helper CLI for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.<br>
 
-Calibre needs to be installed to use this script.<br>
+Calibre needs to be installed to use this CLI.<br>
 
 Supported sites which are compatible with Calibre can be found here: https://manual.calibre-ebook.com/generated/en/ebook-convert.html<br>
 
@@ -30,9 +30,9 @@ usage: ebook-convert-helper [-h] -i INPUT_FORMAT -o OUTPUT_FORMAT --dir
                                     DIR [--delete-file] [-r] [--verbose] [--debug]
                                     [--log] [--version]
 
-A helper cli for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.
+A helper CLI for calibre's ebook-convert CLI which is used to convert all files in an directory into another format.
 
-Calibre needs to be installed to use this script.
+Calibre needs to be installed to use this CLI.
 
 Supported sites which are compatible with Calibre can be found here: https://manual.calibre-ebook.com/generated/en/ebook-convert.html
 
@@ -45,7 +45,7 @@ optional arguments:
   -o OUTPUT_FORMAT, --output-format OUTPUT_FORMAT
                         Output format
   --dir DIR             Absoulte Path to the directory
-  --delete              Delete all the files with the Input format
+  --delete              Delete all the files containing the Input format
   -r, --recursive       Convert all files from both the directory and its sub-directories
   --ignore              Read directories or files from .echignore which will be excluded from the conversion
   --verbose             Show ebook-convert's stdout
@@ -61,25 +61,25 @@ optional arguments:
 - To convert all `mobi` files inside the directory `~/Books` into `azw3`
 
 ```
-ebook-convert-helper-i mobi -o azw3 --dir ~/Books
+ebook-convert-helper -i mobi -o azw3 --dir ~/Books
 ```
 
 - To include all the sub-directories inside the `--dir` directory, use `--recursive`
 
 ```
-ebook-convert-helper-i mobi -o azw3 --dir ~/Books --recursive
+ebook-convert-helper -i mobi -o azw3 --dir ~/Books --recursive
 ```
 
 - To delete the all the files with `-i, --input-format` i.e. `mobi`, use `--delete`
 
 ```
-ebook-convert-helper-i mobi -o azw3 --dir ~/Books --delete
+ebook-convert-helper -i mobi -o azw3 --dir ~/Books --delete
 ```
 
 - To ignore directories or files, use `--ignore` which will read the `.echignore` file from the root directory specified by `--dir` and exclude its contents
 
 ```
-ebook-convert-helper-i mobi -o azw3 --dir ~/Books --ignore
+ebook-convert-helper -i mobi -o azw3 --dir ~/Books --ignore
 ```
 
 ---
