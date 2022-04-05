@@ -62,7 +62,7 @@ def main(argv=None):
         convert_files(args, files, logger)
 
     if args.version is True:
-        tqdm.write("ebook-convert-helper: v0.3.1")
+        tqdm.write("ebook-convert-helper: v0.3.2")
         sys.exit(0)
 
 
@@ -84,7 +84,7 @@ To report issues for the CLI, open an issue at https://github.com/arzkar/calibre
                         type=str, help="Output format")
 
     parser.add_argument("--dir",  type=str,
-                        help="Absoulte Path to the directory")
+                        help="Absolute Path to the directory")
 
     parser.add_argument("--delete", action='store_true',
                         help="Delete all the files containing the Input format")
@@ -219,14 +219,15 @@ def convert_files(args, files, logger):
 
                         # Delete the input file
                         os.remove(input_file)
+
+                if args.debug or args.log and not err:
+                    logger.info(f"File converted as {output_file}")
+                else:
+                    tqdm.write(
+                        f"{Fore.MAGENTA}File converted as {output_file}{Style.RESET_ALL}\n")
+
             else:
                 tqdm.write(err.decode())
-
-            if args.debug or args.log:
-                logger.info(f"File converted as {output_file}")
-            else:
-                tqdm.write(
-                    f"{Fore.MAGENTA}File converted as {output_file}{Style.RESET_ALL}\n")
 
             # update the progressbar
             pbar.update(1)

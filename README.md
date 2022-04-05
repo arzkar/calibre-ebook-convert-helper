@@ -44,7 +44,7 @@ optional arguments:
                         Input format
   -o OUTPUT_FORMAT, --output-format OUTPUT_FORMAT
                         Output format
-  --dir DIR             Absoulte Path to the directory
+  --dir DIR             Absolute Path to the directory
   --delete              Delete all the files containing the Input format
   -r, --recursive       Convert all files from both the directory and its sub-directories
   --ignore              Read directories or files from .echignore which will be excluded from the conversion
